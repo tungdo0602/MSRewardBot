@@ -37,15 +37,17 @@
 					let chars = chargen(10);
 					let a = document.createElement("iframe");
 					a.src = "https://www.bing.com/news/search?q=" + Math.random() + chars;
-					if(!(((new URL(location.href).searchParams.get("debug")+"")).toLowerCase()==='true'))a.style.display = "none";
 					a.id = chars;
 					document.body.appendChild(a);
-					a.onload = function(){
-						window.setTimeout(function(){
-							a.remove();
-							frameReady += 1;
-						}, 5000);
-					}
+					if(!(((new URL(location.href).searchParams.get("debug")+"")).toLowerCase()==='true')){
+						a.style.display = "none";
+						a.onload = function(){
+							window.setTimeout(function(){
+								a.remove();
+								frameReady += 1;
+							}, 5000);
+						}
+				}
 				}
 				for(let i=0;i<Number(localStorage.getItem("searches"));i++){
 					createIframe();
