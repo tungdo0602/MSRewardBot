@@ -2,8 +2,24 @@
 	<head></head>
 	<body>
 		<p>Status: <strong id="status">Currently running...</strong></p>
+		<p>Current search per load: <strong id="searches"></strong></p><button id="change">Change</button> <button id="reset">Reset</button>
 		<script>
 			window.onload = function(){
+				if(!localStorage.getItem("searches"))localStorage.setItem("searches", 1);
+				window.setInterval(function(){
+					document.querySelector("#searches").innerText = "" + localStorage.getItem("searches");
+				});
+				document.querySelector("#change").onclick = function(){
+					let w = prompt();
+					if(w<=0||w>100){
+						alert("Number must between 1 and 100.")
+					}else{
+						localStorage.setItem("searches", Number(w));
+					}
+				}
+				document.querySelector("#reset").onclick = function(){
+					localStorage.setItem("searches", 1);
+				}
 				let frameReady = 0;
 				function checkBoolean(v){
 					return ""+v.toLowerCase()==='true';
@@ -28,14 +44,14 @@
 						window.setTimeout(function(){
 							a.remove();
 							frameReady += 1;
-						}, 1000);
+						}, 5000);
 					}
 				}
-				for(let i=0;i<10;i++){
+				for(let i=0;i<Number(localStorage.getItem("searches"));i++){
 					createIframe();
 				}
 				let isDone = window.setInterval(function(){
-					if(frameReady>=9){
+					if(frameReady>=(Number(localStorage.getItem("searches"))-1)){
 						document.querySelector("#status").innerText = "Done!";
 						window.clearInterval(isDone);
 					}
