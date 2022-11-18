@@ -4,13 +4,22 @@
 	</head>
 	<body>
 		<p>Status: <strong id="status">Currently running...</strong></p>
+		<p>Auto reload page: <strong id="reloadstatus"></strong></p><button id="reload">Toggle</button>
 		<p>Current search per load: <strong id="searches"></strong></p><button id="change">Change</button> <button id="reset">Reset</button>
 		<script>
 			window.onload = function(){
+				function checkBoolean(v){
+					return ""+v.toLowerCase()==='true';
+				}
 				if(!localStorage.getItem("searches"))localStorage.setItem("searches", 1);
+				if(!localStorage.getItem("autoreload"))localStorage.setItem("autoreload", false);
 				window.setInterval(function(){
 					document.querySelector("#searches").innerText = "" + localStorage.getItem("searches");
+					document.querySelector("#reloadstatus").innerText = "" + localStorage.getItem("autoreload");
 				});
+				document.querySelector("#reload").onclick = function(){
+					localStorage.setItem("autoreload", !checkBoolean(localStorage.getItem("autoreload")));
+				}
 				document.querySelector("#change").onclick = function(){
 					let w = prompt();
 					if(w<=0||w>100){
@@ -23,9 +32,6 @@
 					localStorage.setItem("searches", 1);
 				}
 				let frameReady = 0;
-				function checkBoolean(v){
-					return ""+v.toLowerCase()==='true';
-				}
 				function chargen(length) {
 					var result           = '';
 					var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -50,7 +56,7 @@
 							window.setTimeout(function(){
 								a.remove();
 								frameReady += 1;
-							}, 5000);
+							}, 3000);
 						}
 				}
 				}
@@ -59,9 +65,15 @@
 				}
 				let isDone = window.setInterval(function(){
 					if(frameReady>=(Number(localStorage.getItem("searches"))-1)){
-						document.querySelector("#status").innerText = "Done! Reloading...";
 						window.clearInterval(isDone);
-						location.reload();
+						if(checkBoolean(localStorage.getItem("autoreload"))){
+							document.querySelector("#status").innerText = "Done! Reloading in 5 seconds...";
+							window.setTimeout(function(){
+								location.reload();
+							}, 5000);
+						}else{
+							document.querySelector("#status").innerText = "Done!";
+						}
 					}
 				})
 			}
