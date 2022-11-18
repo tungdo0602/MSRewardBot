@@ -56,7 +56,7 @@
 							window.setTimeout(function(){
 								a.remove();
 								frameReady += 1;
-							}, 3000);
+							}, 1500);
 						}
 				}
 				}
@@ -67,10 +67,10 @@
 					if(frameReady>=(Number(localStorage.getItem("searches"))-1)){
 						window.clearInterval(isDone);
 						if(checkBoolean(localStorage.getItem("autoreload"))){
-							document.querySelector("#status").innerText = "Done! Reloading in 5 seconds...";
+							document.querySelector("#status").innerText = "Done! Reloading in 1 seconds...";
 							window.setTimeout(function(){
 								location.reload();
-							}, 5000);
+							}, 1000);
 						}else{
 							document.querySelector("#status").innerText = "Done!";
 						}
