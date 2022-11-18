@@ -1,5 +1,7 @@
 <html>
-	<head></head>
+	<head>
+		<title>Microsoft Rewards Bot</title>
+	</head>
 	<body>
 		<p>Status: <strong id="status">Currently running...</strong></p>
 		<p>Current search per load: <strong id="searches"></strong></p><button id="change">Change</button> <button id="reset">Reset</button>
@@ -36,7 +38,10 @@
 				function createIframe(search){
 					let chars = chargen(10);
 					let a = document.createElement("iframe");
-					a.src = "https://www.bing.com/news/search?q=" + Math.random() + chars;
+					let bingurl = new URL("https://www.bing.com/news/search?q=" + Math.random() + chars);
+					bingurl.searchParams.set("setmkt", "en-us");
+					bingurl.searchParams.set("setlang", "en");
+					a.src = bingurl.href;
 					a.id = chars;
 					document.body.appendChild(a);
 					if(!(((new URL(location.href).searchParams.get("debug")+"")).toLowerCase()==='true')){
@@ -54,8 +59,9 @@
 				}
 				let isDone = window.setInterval(function(){
 					if(frameReady>=(Number(localStorage.getItem("searches"))-1)){
-						document.querySelector("#status").innerText = "Done!";
+						document.querySelector("#status").innerText = "Done! Reloading...";
 						window.clearInterval(isDone);
+						location.reload();
 					}
 				})
 			}
