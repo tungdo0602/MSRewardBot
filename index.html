@@ -55,10 +55,10 @@
 						a.onload = function(){
 							window.setTimeout(function(){
 								a.remove();
-								frameReady += 1;
-							}, 1500);
+							}, 1000);
+							frameReady += 1;
 						}
-				}
+					}
 				}
 				for(let i=0;i<Number(localStorage.getItem("searches"));i++){
 					createIframe();
