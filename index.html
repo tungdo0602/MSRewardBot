@@ -6,6 +6,7 @@
 		<p>Status: <strong id="status">Currently running...</strong></p>
 		<p>Auto reload page: <strong id="reloadstatus"></strong></p><button id="reload">Toggle</button>
 		<p>Current search per load: <strong id="searches"></strong></p><button id="change">Change</button> <button id="reset">Reset</button>
+		<button id="dm"><span id="dms"></span> Debug Mode</button>
 		<script>
 			window.onload = function(){
 				function checkBoolean(v){
@@ -13,12 +14,24 @@
 				}
 				if(!localStorage.getItem("searches"))localStorage.setItem("searches", 1);
 				if(!localStorage.getItem("autoreload"))localStorage.setItem("autoreload", false);
+				if(!localStorage.getItem("debug"))localStorage.setItem("debug", false);
 				window.setInterval(function(){
 					document.querySelector("#searches").innerText = "" + localStorage.getItem("searches");
 					document.querySelector("#reloadstatus").innerText = "" + localStorage.getItem("autoreload");
+					if(checkBoolean(localStorage.getItem("debug"))){
+						document.querySelector("#dms").innerText = "Disable";
+					}else{
+						document.querySelector("#dms").innerText = "Enable";
+					}
 				});
 				document.querySelector("#reload").onclick = function(){
 					localStorage.setItem("autoreload", !checkBoolean(localStorage.getItem("autoreload")));
+				}
+				document.querySelector("#dm").onclick = function(){
+					localStorage.setItem("debug", !checkBoolean(localStorage.getItem("debug")));
+					let dbg = new URL(location.href);
+					dbg.searchParams.set("debug", localStorage.getItem("debug"));
+					location.href = dbg;
 				}
 				document.querySelector("#change").onclick = function(){
 					let w = prompt();
@@ -75,7 +88,7 @@
 							document.querySelector("#status").innerText = "Done!";
 						}
 					}
-				})
+				});
 			}
 		</script>
 	</body>
