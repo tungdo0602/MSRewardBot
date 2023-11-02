@@ -6,6 +6,7 @@
 		<p>Status: <strong id="status">Currently running...</strong></p>
 		<p>Auto reload page: <strong id="reloadstatus"></strong></p><button id="reload">Toggle</button>
 		<p>Current search per load: <strong id="searches"></strong></p><button id="change">Change</button> <button id="reset">Reset</button>
+		<p>Reload delay (ms): <strong id="rd"></strong></p><button id="cdelay">Change</button><br><br>
 		<button id="dm"><span id="dms"></span> Debug Mode</button>
 		<script>
 			window.onload = function(){
@@ -15,8 +16,10 @@
 				if(!localStorage.getItem("searches"))localStorage.setItem("searches", 1);
 				if(!localStorage.getItem("autoreload"))localStorage.setItem("autoreload", false);
 				if(!localStorage.getItem("debug"))localStorage.setItem("debug", false);
+				if(!localStorage.getItem("rd"))localStorage.setItem("rd", 1000);
 				window.setInterval(function(){
 					document.querySelector("#searches").innerText = "" + localStorage.getItem("searches");
+					document.querySelector("#rd").innerText = "" + localStorage.getItem("rd");
 					document.querySelector("#reloadstatus").innerText = "" + localStorage.getItem("autoreload");
 					if(checkBoolean(localStorage.getItem("debug"))){
 						document.querySelector("#dms").innerText = "Disable";
@@ -39,6 +42,14 @@
 						alert("Number must between 1 and 100.")
 					}else{
 						localStorage.setItem("searches", Number(w));
+					}
+				}
+				document.querySelector("#cdelay").onclick = function(){
+					let w = prompt();
+					if(w<=0){
+						alert("Number must larger than 0.")
+					}else{
+						localStorage.setItem("rd", Number(w));
 					}
 				}
 				document.querySelector("#reset").onclick = function(){
@@ -65,10 +76,10 @@
 					document.body.appendChild(a);
 					if(!(((new URL(location.href).searchParams.get("debug")+"")).toLowerCase()==='true')){
 						a.style.display = "none";
-						a.onload = function(){
+						a.contentWindow.onload = function(){
 							window.setTimeout(function(){
 								a.remove();
-							}, 1000);
+							}, 2000);
 						}
 						frameReady += 1;
 					}
@@ -80,10 +91,10 @@
 					if(frameReady>=(Number(localStorage.getItem("searches"))-1)){
 						window.clearInterval(isDone);
 						if(checkBoolean(localStorage.getItem("autoreload"))){
-							document.querySelector("#status").innerText = "Done! Reloading in 1 seconds...";
+							document.querySelector("#status").innerText = `Done! Reloading in ${parseFloat(Number(localStorage.getItem("rd"))/1000).toFixed(2)} seconds...`;
 							window.setTimeout(function(){
 								location.reload();
-							}, 1000);
+							}, Number(localStorage.getItem("rd")));
 						}else{
 							document.querySelector("#status").innerText = "Done!";
 						}
